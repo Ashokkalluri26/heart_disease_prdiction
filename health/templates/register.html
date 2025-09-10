@@ -1,0 +1,136 @@
+{% extends 'index.html' %}
+{% load static %}
+<head>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" media="all" />
+    <link rel="stylesheet" href="{% static 'css/dark-theme.css' %}" type="text/css" media="all" />
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+</head>
+{% block body %}
+	<!-- register -->
+{% if error == "create" %}
+<script>
+    alert('Registration Successfull');
+    window.location="{% url 'login' %}";
+</script>
+{% endif %}
+
+
+	<section class="logins py-5">
+		<div class="container py-xl-5 py-lg-3">
+			<div class="title-section mb-md-5 mb-4">
+				<h6 class="w3ls-title-sub"></h6>
+				<h3 class="w3ls-title text-uppercase font-weight-bold" style="color: var(--neon-pink); text-shadow: 0 0 15px rgba(255, 0, 128, 0.5); font-size: 2.5rem;">Register Now</h3>
+			</div><hr/>
+			<div class="login px-sm-12" style="width:100%">
+				<form action="" method="post" enctype="multipart/form-data" class="modern-register-form">
+					{% csrf_token %}
+					<div class="form-group row mb-4">
+						<div class="col-md-6 mb-3">
+							<label style="color: var(--text-primary); font-weight: 500; margin-bottom: 8px;">First Name</label>
+							<div style="position: relative;">
+								<i class="fa fa-user" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--neon-pink); z-index: 1; pointer-events: none; font-size: 14px;"></i>
+								<input type="text" class="form-control modern-input" name="fname" placeholder="First Name" required=""
+									style="background: var(--dark-surface); border: 2px solid rgba(255, 0, 128, 0.3); border-radius: 10px; padding: 12px 12px 12px 50px; color: var(--text-primary); font-size: 1rem; transition: all 0.3s ease; z-index: 2; position: relative;">
+							</div>
+						</div>
+						<div class="col-md-6 mb-3">
+							<label style="color: var(--text-primary); font-weight: 500; margin-bottom: 8px;">Last Name</label>
+							<div style="position: relative;">
+								<i class="fa fa-user" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--neon-pink); z-index: 1; pointer-events: none; font-size: 14px;"></i>
+								<input type="text" class="form-control modern-input" name="lname" placeholder="Last Name" required=""
+									style="background: var(--dark-surface); border: 2px solid rgba(255, 0, 128, 0.3); border-radius: 10px; padding: 12px 12px 12px 50px; color: var(--text-primary); font-size: 1rem; transition: all 0.3s ease; z-index: 2; position: relative;">
+							</div>
+						</div>
+					</div>
+					<div class="form-group row mb-4">
+						<div class="col-md-6 mb-3">
+							<label style="color: var(--text-primary); font-weight: 500; margin-bottom: 8px;">Username</label>
+							<div style="position: relative;">
+								<i class="fa fa-user-circle" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--neon-pink); z-index: 1; pointer-events: none; font-size: 14px;"></i>
+								<input type="text" class="form-control modern-input" name="uname" placeholder="Username" required=""
+									style="background: var(--dark-surface); border: 2px solid rgba(255, 0, 128, 0.3); border-radius: 10px; padding: 12px 12px 12px 50px; color: var(--text-primary); font-size: 1rem; transition: all 0.3s ease; z-index: 2; position: relative;">
+							</div>
+						</div>
+						<div class="col-md-6 mb-3">
+							<label style="color: var(--text-primary); font-weight: 500; margin-bottom: 8px;">Password</label>
+							<div style="position: relative;">
+								<i class="fa fa-lock" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--neon-pink); z-index: 1; pointer-events: none; font-size: 14px;"></i>
+								<input type="password" class="form-control modern-input" name="pwd" placeholder="Password" required=""
+									style="background: var(--dark-surface); border: 2px solid rgba(255, 0, 128, 0.3); border-radius: 10px; padding: 12px 12px 12px 50px; color: var(--text-primary); font-size: 1rem; transition: all 0.3s ease; z-index: 2; position: relative;">
+							</div>
+						</div>
+					</div>
+					<div class="form-group row mb-4">
+						<div class="col-md-6 mb-3">
+							<label style="color: var(--text-primary); font-weight: 500; margin-bottom: 8px;">Email</label>
+							<div style="position: relative;">
+								<i class="fa fa-envelope" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--neon-pink); z-index: 1; pointer-events: none; font-size: 14px;"></i>
+								<input type="email" class="form-control modern-input" name="email" placeholder="Enter Email" required=""
+									style="background: var(--dark-surface); border: 2px solid rgba(255, 0, 128, 0.3); border-radius: 10px; padding: 12px 12px 12px 50px; color: var(--text-primary); font-size: 1rem; transition: all 0.3s ease; z-index: 2; position: relative;">
+							</div>
+						</div>
+						<div class="col-md-6 mb-3">
+							<label style="color: var(--text-primary); font-weight: 500; margin-bottom: 8px;">Contact</label>
+							<div style="position: relative;">
+								<i class="fa fa-phone" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--neon-pink); z-index: 1; pointer-events: none; font-size: 14px;"></i>
+								<input type="text" class="form-control modern-input" name="contact" placeholder="Enter Contact" required=""
+									style="background: var(--dark-surface); border: 2px solid rgba(255, 0, 128, 0.3); border-radius: 10px; padding: 12px 12px 12px 50px; color: var(--text-primary); font-size: 1rem; transition: all 0.3s ease; z-index: 2; position: relative;">
+							</div>
+						</div>
+					</div>
+					<div class="form-group row mb-4">
+						<div class="col-md-6 mb-3">
+							<label style="color: var(--text-primary); font-weight: 500; margin-bottom: 8px;">Date Of Birth</label>
+							<div style="position: relative;">
+								<i class="fa fa-calendar" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--neon-pink); z-index: 1; pointer-events: none; font-size: 14px;"></i>
+								<input type="date" class="form-control modern-input" name="dob" required=""
+									style="background: var(--dark-surface); border: 2px solid rgba(255, 0, 128, 0.3); border-radius: 10px; padding: 12px 12px 12px 50px; color: var(--text-primary); font-size: 1rem; transition: all 0.3s ease; z-index: 2; position: relative;">
+							</div>
+						</div>
+						<div class="col-md-6 mb-3">
+							<label style="color: var(--text-primary); font-weight: 500; margin-bottom: 8px;">Profile Image</label>
+							<div style="position: relative;">
+								<i class="fa fa-image" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--neon-pink); z-index: 1; pointer-events: none; font-size: 14px;"></i>
+								<input type="file" class="form-control modern-input" name="image" required=""
+									style="background: var(--dark-surface); border: 2px solid rgba(255, 0, 128, 0.3); border-radius: 10px; padding: 12px 12px 12px 50px; color: var(--text-primary); font-size: 1rem; transition: all 0.3s ease; z-index: 2; position: relative;">
+							</div>
+						</div>
+					</div>
+					<div class="form-group row mb-4">
+						<div class="col-md-6 mb-3">
+							<label style="color: var(--text-primary); font-weight: 500; margin-bottom: 8px;">City/Address</label>
+							<div style="position: relative;">
+								<i class="fa fa-map-marker" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--neon-pink); z-index: 1; pointer-events: none; font-size: 14px;"></i>
+								<input type="text" class="form-control modern-input" name="add" placeholder="Enter Address" required=""
+									style="background: var(--dark-surface); border: 2px solid rgba(255, 0, 128, 0.3); border-radius: 10px; padding: 12px 12px 12px 50px; color: var(--text-primary); font-size: 1rem; transition: all 0.3s ease; z-index: 2; position: relative;">
+							</div>
+						</div>
+						<div class="col-md-6 mb-3">
+							<label style="color: var(--text-primary); font-weight: 500; margin-bottom: 8px;">User Type</label>
+							<div style="background: var(--dark-surface); border: 2px solid rgba(255, 0, 128, 0.3); border-radius: 10px; padding: 15px; color: var(--text-primary);">
+								<label style="margin-right: 25px; cursor: pointer;">
+									<input type="radio" name="type" value="Patient" required="" style="margin-right: 8px; accent-color: var(--neon-pink);">
+									<i class="fa fa-user-o" style="color: var(--neon-pink); margin-right: 5px;"></i>Patient
+								</label>
+								<label style="cursor: pointer;">
+									<input type="radio" name="type" value="Doctor" required="" style="margin-right: 8px; accent-color: var(--neon-pink);">
+									<i class="fa fa-user-md" style="color: var(--neon-pink); margin-right: 5px;"></i>Doctor
+								</label>
+							</div>
+						</div>
+					</div>
+					<button type="submit" class="btn submit mt-4 w-100" 
+						style="background: var(--gradient-secondary); border: none; border-radius: 15px; padding: 15px; color: white; font-size: 1.2rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease; box-shadow: 0 8px 25px rgba(255, 0, 128, 0.3);">
+						<i class="fa fa-user-plus mr-2"></i>Register Now
+					</button>
+					<p class="text-center mt-5">
+						<a href="#">By clicking Register, I agree to your terms</a>
+					</p>
+				</form>
+			</div>
+		</div>
+	</section>
+	<!-- //register -->
+
+{% endblock %}

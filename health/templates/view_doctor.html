@@ -1,0 +1,715 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    :root {
+        --neon-cyan: #00ffff;
+        --neon-pink: #ff1493;
+        --neon-orange: #ff8c00;
+        --neon-green: #39ff14;
+        --dark-bg: #0a0a0a;
+        --card-bg: rgba(20, 20, 20, 0.9);
+    }
+    
+    .doctor-container {
+        background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a2e 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+        color: white;
+    }
+    
+    .doctor-title {
+        color: var(--neon-orange);
+        text-shadow: 0 0 20px rgba(255, 140, 0, 0.8);
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    
+    .doctor-table-wrapper {
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 140, 0, 0.3);
+        overflow-x: auto;
+    }
+    
+    .doctor-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: transparent !important;
+        color: white !important;
+        font-size: 0.85rem;
+        visibility: visible !important;
+        display: table !important;
+    }
+    
+    .doctor-table thead th {
+        background: linear-gradient(45deg, var(--neon-orange), #ff6b35);
+        color: white;
+        padding: 12px 6px;
+        text-align: center;
+        font-weight: bold;
+        border: none;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        font-size: 0.8rem;
+    }
+    
+    .doctor-table tbody tr {
+        border-bottom: 1px solid rgba(255, 140, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .doctor-table tbody tr:hover {
+        background: rgba(255, 140, 0, 0.1);
+        transform: scale(1.01);
+        box-shadow: 0 5px 15px rgba(255, 140, 0, 0.3);
+    }
+    
+    .doctor-table tbody td {
+        padding: 10px 6px;
+        border: none;
+        vertical-align: middle;
+        color: #e0e0e0 !important;
+        visibility: visible !important;
+        display: table-cell !important;
+    }
+    
+    .doctor-table tbody td:first-child {
+        text-align: center;
+        font-weight: bold;
+        color: var(--neon-orange);
+    }
+    
+    .doctor-name-cell {
+        color: var(--neon-pink) !important;
+        font-weight: bold;
+        min-width: 120px;
+    }
+    
+    .doctor-email-cell {
+        color: var(--neon-cyan) !important;
+        font-family: 'Courier New', monospace;
+        font-size: 0.75rem;
+    }
+    
+    .doctor-contact-cell {
+        color: var(--neon-green) !important;
+        font-weight: bold;
+    }
+    
+    .doctor-image {
+        width: 60px !important;
+        height: 60px !important;
+        border-radius: 50%;
+        border: 2px solid var(--neon-orange);
+        object-fit: cover;
+    }
+    
+    .status-authorized {
+        color: var(--neon-green) !important;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+    }
+    
+    .status-unauthorized {
+        color: #ff4757 !important;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
+    }
+    
+    .action-btn {
+        border: none;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.75rem;
+        margin: 2px;
+    }
+    
+    .btn-success {
+        background: linear-gradient(45deg, #28a745, #20c997);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+    }
+    
+    .btn-success:hover {
+        background: linear-gradient(45deg, #20c997, #17a2b8);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
+    }
+    
+    .btn-danger {
+        background: linear-gradient(45deg, #dc3545, #c82333);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+    }
+    
+    .btn-danger:hover {
+        background: linear-gradient(45deg, #c82333, #a71e2a);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.6);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(45deg, #0056b3, #004085);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 123, 255, 0.6);
+    }
+    
+    .address-cell {
+        max-width: 150px;
+        word-wrap: break-word;
+        font-size: 0.75rem;
+    }
+    
+    .category-cell {
+        color: var(--neon-pink);
+        font-weight: bold;
+        text-transform: capitalize;
+    }
+    
+    @media (max-width: 1200px) {
+        .doctor-table thead th,
+        .doctor-table tbody td {
+            padding: 8px 4px;
+            font-size: 0.7rem;
+        }
+        
+        .doctor-image {
+            width: 50px !important;
+            height: 50px !important;
+        }
+        
+        .address-cell {
+            max-width: 100px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .doctor-table-wrapper {
+            padding: 1rem;
+        }
+        
+        .doctor-title {
+            font-size: 2rem;
+        }
+        
+        .doctor-image {
+            width: 40px !important;
+            height: 40px !important;
+        }
+    }
+    
+    /* AI Assistant Styles */
+    .ai-assistant {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        font-family: 'Arial', sans-serif;
+    }
+    
+    .ai-toggle-btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, var(--neon-orange), #ff6b35);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(255, 140, 0, 0.4);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .ai-toggle-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 25px rgba(255, 140, 0, 0.6);
+    }
+    
+    .ai-chat-window {
+        position: absolute;
+        bottom: 80px;
+        right: 0;
+        width: 350px;
+        height: 450px;
+        background: var(--card-bg);
+        border-radius: 15px;
+        border: 2px solid var(--neon-orange);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    
+    .ai-header {
+        background: linear-gradient(45deg, var(--neon-orange), #ff6b35);
+        padding: 15px;
+        color: white;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .ai-messages {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        color: white;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+    
+    .ai-message {
+        background: rgba(255, 140, 0, 0.1);
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        border-left: 3px solid var(--neon-orange);
+    }
+    
+    .ai-input-area {
+        padding: 15px;
+        border-top: 1px solid rgba(255, 140, 0, 0.3);
+        display: flex;
+        gap: 10px;
+    }
+    
+    .ai-input {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid rgba(255, 140, 0, 0.3);
+        border-radius: 20px;
+        background: rgba(0, 0, 0, 0.3);
+        color: white;
+        outline: none;
+        font-size: 0.9rem;
+    }
+    
+    .ai-send-btn {
+        padding: 8px 15px;
+        background: linear-gradient(45deg, var(--neon-orange), #ff6b35);
+        border: none;
+        border-radius: 20px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .ai-send-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4);
+    }
+    
+    @media (max-width: 768px) {
+        .ai-chat-window {
+            width: 300px;
+            height: 400px;
+        }
+        
+        .ai-assistant {
+            bottom: 15px;
+            right: 15px;
+        }
+    }
+    
+    @keyframes shine {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    }
+</style>
+
+<div class="doctor-container">
+    <div class="container-fluid" style="width:98%;">
+        <h1 class="doctor-title">Doctor Records</h1>
+        
+        <div class="doctor-table-wrapper">
+            <div class="table-header" style="margin-bottom: 1.5rem; padding: 1rem; background: linear-gradient(45deg, rgba(255, 140, 0, 0.1), rgba(255, 107, 53, 0.1)); border-radius: 10px; border-left: 4px solid var(--neon-orange);">
+                <h3 style="color: var(--neon-orange); margin: 0; font-size: 1.2rem; font-weight: bold; text-shadow: 0 0 10px rgba(255, 140, 0, 0.5);">
+                    <i class="fa fa-user-md" style="margin-right: 10px;"></i>
+                    Doctor Management System
+                </h3>
+                <p style="color: #e0e0e0; margin: 0.5rem 0 1rem 0; font-size: 0.9rem; opacity: 0.8;">
+                    Manage doctor registrations, authorization status, and profile information
+                </p>
+                <div class="search-container" style="display: flex; align-items: center; gap: 10px;">
+                    <div style="position: relative; flex: 1; max-width: 400px;">
+                        <i class="fa fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--neon-orange); z-index: 2;"></i>
+                        <input type="text" id="doctorSearch" placeholder="Search doctors by name, email, category, or status..." 
+                               style="width: 100%; padding: 10px 10px 10px 35px; border: 2px solid rgba(255, 140, 0, 0.3); border-radius: 25px; background: rgba(0, 0, 0, 0.3); color: white; font-size: 0.9rem; outline: none; transition: all 0.3s ease;">
+                    </div>
+                    <button id="clearSearch" style="padding: 10px 15px; background: linear-gradient(45deg, #dc3545, #c82333); border: none; border-radius: 20px; color: white; cursor: pointer; transition: all 0.3s ease;">
+                        <i class="fa fa-times"></i> Clear
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="doctor-table" id="doctorTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Full Name</th>
+                            <th>Image</th>
+                            <th>Email</th>
+                            <th>Contact</th>
+                            <th>Address</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Assign</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in doc %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td class="doctor-name-cell">{{i.user.first_name}} {{i.user.last_name}}</td>
+                            <td style="text-align: center;">
+                                <img src="{{i.image.url}}" class="doctor-image" alt="Doctor Image">
+                            </td>
+                            <td class="doctor-email-cell">{{i.user.email}}</td>
+                            <td class="doctor-contact-cell">{{i.contact}}</td>
+                            <td class="address-cell">{{i.address}}</td>
+                            <td class="category-cell">{{i.category}}</td>
+                            <td style="text-align: center;">
+                                {% if i.status == 1 %}
+                                    <b class="status-authorized">Authorized</b>
+                                {% else %}
+                                    <b class="status-unauthorized">Unauthorized</b>
+                                {% endif %}
+                            </td>
+                            <td style="text-align: center;">
+                                {% if i.status == 1 %}
+                                    <a href="{% url 'assign_status' i.id %}" onclick="return confirm('Do you want to withdraw approval to doctor: {{i.user.first_name}}?')">
+                                        <button class="action-btn btn-danger">Cancel</button>
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'assign_status' i.id %}" onclick="return confirm('Do you want to approve doctor: {{i.user.first_name}}?')">
+                                        <button class="action-btn btn-success">Assign</button>
+                                    </a>
+                                {% endif %}
+                            </td>
+                            <td style="text-align: center;">
+                                <a href="{% url 'change_doctor' i.id %}">
+                                    <button class="action-btn btn-primary">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                </a>
+                                <a href="{% url 'delete_doctor' i.id %}">
+                                    <button class="action-btn btn-danger" onclick="return confirm('Are you sure you want to delete this doctor?')">
+                                        <i class="fa fa-trash-o"></i>
+                                    </button>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AI Assistant Component (Only visible after login/registration) -->
+{% if user.is_authenticated %}
+<div class="ai-assistant" id="aiAssistant">
+    <button class="ai-toggle-btn" id="aiToggleBtn" title="AI Assistant">
+        <i class="fa fa-android"></i>
+    </button>
+    
+    <div class="ai-chat-window" id="aiChatWindow">
+        <div class="ai-header">
+            <i class="fa fa-robot"></i>
+            <span>AI Assistant</span>
+            <button style="margin-left: auto; background: none; border: none; color: white; cursor: pointer;" onclick="toggleAIAssistant()">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="ai-messages" id="aiMessages">
+            <div class="ai-message">
+                <div style="display: flex; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgba(255, 140, 0, 0.3);">
+                    <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #ff8c00, #ff6b35, #ff4500); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2); position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent); animation: shine 3s infinite;"></div>
+                        <i class="fa fa-android" style="color: white; font-size: 1.4rem; text-shadow: 0 1px 2px rgba(0,0,0,0.3); z-index: 1;"></i>
+                    </div>
+                    <div>
+                        <strong style="color: var(--neon-orange); font-size: 1.1rem; text-shadow: 0 0 8px rgba(255, 140, 0, 0.3);">AI Medical Assistant</strong><br>
+                        <small style="color: #ccc; font-size: 0.85rem;">Ready to help with doctor management</small>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                        <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #28a745, #20c997); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 12px; box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2); border: 1px solid rgba(40, 167, 69, 0.3);">
+                            <i class="fa fa-user-md" style="color: white; font-size: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.2);"></i>
+                        </div>
+                        <strong style="color: #28a745; text-shadow: 0 0 5px rgba(40, 167, 69, 0.3);">Doctor Management</strong>
+                    </div>
+                    <div style="margin-left: 40px; font-size: 0.9rem; line-height: 1.5;">
+                        • Add, edit, and manage doctor profiles<br>
+                        • View specializations and contact information<br>
+                        • Track availability and approval status
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                        <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #007bff, #0056b3); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 12px; box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2); border: 1px solid rgba(0, 123, 255, 0.3);">
+                            <i class="fa fa-heartbeat" style="color: white; font-size: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.2);"></i>
+                        </div>
+                        <strong style="color: #007bff; text-shadow: 0 0 5px rgba(0, 123, 255, 0.3);">Sample Medical Data</strong>
+                    </div>
+                    <div style="margin-left: 40px; font-size: 0.9rem; line-height: 1.5;">
+                        Heart disease prediction format:<br>
+                        <code style="background: rgba(0,0,0,0.4); padding: 6px 10px; border-radius: 4px; display: inline-block; margin: 5px 0; font-size: 0.8rem; border-left: 3px solid var(--neon-orange);">
+                        ['20', '0', '22', '22', '12', '22', '22', '120', '22', '22', '22', '2', '11']
+                        </code>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                        <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #ffc107, #e0a800); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 12px; box-shadow: 0 3px 10px rgba(255, 193, 7, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 193, 7, 0.3);">
+                            <i class="fa fa-lightbulb-o" style="color: white; font-size: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.2);"></i>
+                        </div>
+                        <strong style="color: #ffc107; text-shadow: 0 0 5px rgba(255, 193, 7, 0.3);">Quick Tips</strong>
+                    </div>
+                    <div style="margin-left: 40px; font-size: 0.9rem; line-height: 1.5;">
+                        • Use search to find specific doctors<br>
+                        • Check categories and specializations<br>
+                        • Monitor approval status regularly
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255, 140, 0, 0.3);">
+                    <small style="color: #aaa; font-size: 0.85rem;">
+                        <i class="fa fa-question-circle" style="margin-right: 5px;"></i>
+                        Ask me anything about doctor management!
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ai-input-area">
+            <input type="text" class="ai-input" id="aiInput" placeholder="Ask me anything..." onkeypress="handleAIEnter(event)">
+            <button class="ai-send-btn" onclick="sendAIMessage()">
+                <i class="fa fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const table = document.getElementById('doctorTable');
+        if (table) {
+            // Force visibility
+            table.style.visibility = 'visible';
+            table.style.display = 'table';
+            table.style.opacity = '1';
+            
+            // Make all cells visible
+            const cells = table.querySelectorAll('td, th');
+            cells.forEach(cell => {
+                cell.style.visibility = 'visible';
+                cell.style.display = 'table-cell';
+            });
+        }
+        
+        // Search functionality
+        const searchInput = document.getElementById('doctorSearch');
+        const clearBtn = document.getElementById('clearSearch');
+        const tableRows = document.querySelectorAll('#doctorTable tbody tr');
+        
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                
+                tableRows.forEach(row => {
+                    const name = row.querySelector('.doctor-name-cell')?.textContent.toLowerCase() || '';
+                    const email = row.querySelector('.doctor-email-cell')?.textContent.toLowerCase() || '';
+                    const category = row.querySelector('.category-cell')?.textContent.toLowerCase() || '';
+                    const status = row.querySelector('.status-authorized, .status-unauthorized')?.textContent.toLowerCase() || '';
+                    
+                    const matchFound = name.includes(searchTerm) || 
+                                    email.includes(searchTerm) || 
+                                    category.includes(searchTerm) || 
+                                    status.includes(searchTerm);
+                    
+                    row.style.display = matchFound ? '' : 'none';
+                });
+            });
+            
+            // Search input focus effects
+            searchInput.addEventListener('focus', function() {
+                this.style.borderColor = 'var(--neon-orange)';
+                this.style.boxShadow = '0 0 15px rgba(255, 140, 0, 0.3)';
+            });
+            
+            searchInput.addEventListener('blur', function() {
+                this.style.borderColor = 'rgba(255, 140, 0, 0.3)';
+                this.style.boxShadow = 'none';
+            });
+        }
+        
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                tableRows.forEach(row => {
+                    row.style.display = '';
+                });
+            });
+            
+            clearBtn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 6px 20px rgba(220, 53, 69, 0.4)';
+            });
+            
+            clearBtn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+        }
+        
+        // Initialize AI Assistant
+        const aiToggleBtn = document.getElementById('aiToggleBtn');
+        if (aiToggleBtn) {
+            aiToggleBtn.addEventListener('click', toggleAIAssistant);
+        }
+    });
+    
+    // AI Assistant Functions
+    function toggleAIAssistant() {
+        const chatWindow = document.getElementById('aiChatWindow');
+        const toggleBtn = document.getElementById('aiToggleBtn');
+        
+        if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
+            chatWindow.style.display = 'flex';
+            toggleBtn.innerHTML = '<i class="fa fa-times"></i>';
+        } else {
+            chatWindow.style.display = 'none';
+            toggleBtn.innerHTML = '<i class="fa fa-android"></i>';
+        }
+    }
+    
+    function sendAIMessage() {
+        const input = document.getElementById('aiInput');
+        const messagesContainer = document.getElementById('aiMessages');
+        const userMessage = input.value.trim();
+        
+        if (!userMessage) return;
+        
+        // Add user message
+        const userDiv = document.createElement('div');
+        userDiv.className = 'ai-message';
+        userDiv.style.background = 'rgba(0, 123, 255, 0.1)';
+        userDiv.style.borderLeft = '3px solid #007bff';
+        userDiv.innerHTML = `<strong>You:</strong> ${userMessage}`;
+        messagesContainer.appendChild(userDiv);
+        
+        // Generate AI response
+        const aiResponse = generateAIResponse(userMessage.toLowerCase());
+        
+        setTimeout(() => {
+            const aiDiv = document.createElement('div');
+            aiDiv.className = 'ai-message';
+            aiDiv.innerHTML = `<strong>🤖 AI Assistant:</strong> ${aiResponse}`;
+            messagesContainer.appendChild(aiDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 500);
+        
+        input.value = '';
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+    
+    function handleAIEnter(event) {
+        if (event.key === 'Enter') {
+            sendAIMessage();
+        }
+    }
+    
+    function generateAIResponse(message) {
+        // Sample medical data responses
+        if (message.includes('sample') || message.includes('data') || message.includes('medical') || message.includes('values')) {
+            return `Here's a sample medical data format for heart disease prediction:<br><br>
+                   <code style="background: rgba(0,0,0,0.3); padding: 5px; border-radius: 3px; display: block; margin: 5px 0;">
+                   ['20', '0', '22', '22', '12', '22', '22', '120', '22', '22', '22', '2', '11']
+                   </code><br>
+                   These values typically represent:<br>
+                   • Age, Sex, Chest Pain Type<br>
+                   • Blood Pressure, Cholesterol<br>
+                   • Heart Rate, Exercise Data<br>
+                   • And other cardiac indicators<br><br>
+                   Make sure to enter accurate medical values for proper prediction results.`;
+        }
+        
+        // Doctor management responses
+        if (message.includes('doctor') || message.includes('manage') || message.includes('authorize')) {
+            return `For doctor management:<br><br>
+                   <strong>✅ Authorize Doctors:</strong> Click "Assign" button for new doctors<br>
+                   <strong>❌ Revoke Access:</strong> Click "Cancel" for authorized doctors<br>
+                   <strong>✏️ Edit Profile:</strong> Use the edit icon to modify doctor details<br>
+                   <strong>🗑️ Remove Doctor:</strong> Use trash icon to delete doctor records<br>
+                   <strong>🔍 Search:</strong> Use the search bar to find specific doctors<br><br>
+                   All changes are saved automatically to the database.`;
+        }
+        
+        // Search functionality
+        if (message.includes('search') || message.includes('find')) {
+            return `The search functionality allows you to:<br><br>
+                   <strong>🔍 Real-time Search:</strong> Results update as you type<br>
+                   <strong>📝 Search Fields:</strong> Name, email, category, status<br>
+                   <strong>🧹 Clear Results:</strong> Use the "Clear" button to reset<br>
+                   <strong>⚡ Instant Filter:</strong> No need to press enter<br><br>
+                   Try searching for doctor names, specializations, or authorization status!`;
+        }
+        
+        // Navigation help
+        if (message.includes('navigate') || message.includes('use') || message.includes('help')) {
+            return `Here's how to navigate the system:<br><br>
+                   <strong>🏠 Dashboard:</strong> Main overview of all features<br>
+                   <strong>👨‍⚕️ Doctors:</strong> Manage doctor registrations and approvals<br>
+                   <strong>👥 Patients:</strong> View patient profiles and information<br>
+                   <strong>📊 Search Logs:</strong> Heart disease prediction history<br>
+                   <strong>💬 Feedback:</strong> Patient feedback and suggestions<br><br>
+                   Each section has search and management capabilities!`;
+        }
+        
+        // Default response
+        return `I can help you with:<br><br>
+               <strong>📊 Medical Data Entry</strong> - Sample values and formats<br>
+               <strong>👨‍⚕️ Doctor Management</strong> - Authorization and profiles<br>
+               <strong>🔍 Search Features</strong> - Finding records quickly<br>
+               <strong>🧭 Navigation</strong> - Using different system sections<br>
+               <strong>💡 Best Practices</strong> - Tips for efficient usage<br><br>
+               What specific topic would you like help with?`;
+    }
+    
+</script>
+
+{% for i in messages %}
+<script>
+    alert('{{i}}');
+</script>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,481 @@
+/* Dark Theme with Bright Accents for Heart Disease Prediction System */
+
+/* CSS Variables for Dark Theme */
+:root {
+    /* Dark Background Colors */
+    --dark-primary: #0f0f23;
+    --dark-secondary: #1a1a2e;
+    --dark-tertiary: #16213e;
+    --dark-card: #1e1e2e;
+    --dark-surface: #252545;
+    
+    /* Bright Accent Colors */
+    --neon-cyan: #00ffff;
+    --neon-pink: #ff0080;
+    --neon-green: #00ff41;
+    --neon-orange: #ff6600;
+    --neon-purple: #8a2be2;
+    --neon-yellow: #ffff00;
+    --electric-blue: #0080ff;
+    --hot-pink: #ff1493;
+    
+    /* Gradient Combinations */
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --gradient-tertiary: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --gradient-success: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    --gradient-danger: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+    
+    /* Text Colors */
+    --text-primary: #ffffff;
+    --text-secondary: #b8b8d4;
+    --text-muted: #8a8ab8;
+    --text-accent: var(--neon-cyan);
+    
+    /* Shadow Effects */
+    --glow-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --hover-shadow: 0 12px 40px rgba(0, 255, 255, 0.2);
+}
+
+/* Global Dark Theme Styles */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--dark-primary);
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* Animated Background Particles */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(2px 2px at 20px 30px, var(--neon-cyan), transparent),
+        radial-gradient(2px 2px at 40px 70px, var(--neon-pink), transparent),
+        radial-gradient(1px 1px at 90px 40px, var(--neon-green), transparent),
+        radial-gradient(1px 1px at 130px 80px, var(--neon-orange), transparent);
+    background-repeat: repeat;
+    background-size: 200px 200px;
+    animation: sparkle 20s linear infinite;
+    opacity: 0.1;
+    z-index: -1;
+}
+
+@keyframes sparkle {
+    0% { transform: translateY(0px) translateX(0px); }
+    25% { transform: translateY(-10px) translateX(5px); }
+    50% { transform: translateY(-5px) translateX(-5px); }
+    75% { transform: translateY(-15px) translateX(10px); }
+    100% { transform: translateY(0px) translateX(0px); }
+}
+
+/* Header and Navigation */
+.main-top {
+    background: var(--gradient-primary) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.navbar, header, .top-bar {
+    background: var(--dark-secondary) !important;
+    border-bottom: 2px solid var(--neon-cyan);
+}
+
+/* Login/Register Button Hover Effects */
+.login-button-2:hover {
+    background: var(--gradient-tertiary) !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5) !important;
+    text-shadow: 0 0 10px currentColor !important;
+}
+
+.login-button-2[style*="neon-pink"]:hover {
+    box-shadow: 0 0 20px rgba(255, 20, 147, 0.5) !important;
+}
+
+#logo h1 a {
+    color: var(--neon-cyan) !important;
+    text-shadow: 0 0 10px var(--neon-cyan);
+    transition: all 0.3s ease;
+}
+
+#logo h1 a:hover {
+    text-shadow: 0 0 20px var(--neon-cyan);
+    transform: scale(1.05);
+}
+
+.nav-link, .menu li a {
+    color: var(--text-primary) !important;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-link:hover, .menu li a:hover {
+    color: var(--neon-cyan) !important;
+    text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+.menu li a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--neon-cyan);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.menu li a:hover::after {
+    width: 100%;
+    box-shadow: 0 0 10px var(--neon-cyan);
+}
+
+/* Cards and Containers */
+.card, .container-fluid > div, .login-wrapper, .form-container {
+    background: var(--dark-card) !important;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 15px;
+    box-shadow: var(--card-shadow);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.card:hover, .login-wrapper:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--hover-shadow);
+    border-color: var(--neon-cyan);
+}
+
+/* Dashboard Cards */
+.dashboard-card, .col-md-6 > a > div {
+    background: var(--gradient-tertiary) !important;
+    border-radius: 15px;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-card::before, .col-md-6 > a > div::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.dashboard-card:hover::before, .col-md-6 > a > div:hover::before {
+    left: 100%;
+}
+
+.dashboard-card:hover, .col-md-6 > a > div:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(0, 255, 255, 0.3);
+}
+
+/* Form Elements */
+.form-control, input, select, textarea {
+    background: var(--dark-surface) !important;
+    border: 2px solid rgba(0, 255, 255, 0.3) !important;
+    border-radius: 10px !important;
+    color: var(--text-primary) !important;
+    padding: 12px 15px !important;
+    transition: all 0.3s ease !important;
+}
+
+.form-control:focus, input:focus, select:focus, textarea:focus {
+    border-color: var(--neon-cyan) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3) !important;
+    transform: scale(1.02);
+    outline: none !important;
+}
+
+.form-control::placeholder, input::placeholder, textarea::placeholder {
+    color: var(--text-muted) !important;
+}
+
+/* Labels */
+label, .form-label {
+    color: var(--text-accent) !important;
+    font-weight: 600 !important;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+}
+
+/* Buttons */
+.btn, button {
+    background: var(--gradient-secondary) !important;
+    border: none !important;
+    border-radius: 25px !important;
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+    padding: 12px 30px !important;
+    transition: all 0.3s ease !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn:hover, button:hover {
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(255, 20, 147, 0.4) !important;
+    color: var(--text-primary) !important;
+}
+
+.btn:active, button:active {
+    transform: translateY(-1px) scale(1.02) !important;
+}
+
+/* Success/Primary Buttons */
+.btn-primary, .btn-success {
+    background: var(--gradient-success) !important;
+}
+
+.btn-primary:hover, .btn-success:hover {
+    box-shadow: 0 8px 25px rgba(67, 233, 123, 0.4) !important;
+}
+
+/* Warning Buttons */
+.btn-warning {
+    background: var(--gradient-warning) !important;
+}
+
+.btn-warning:hover {
+    box-shadow: 0 8px 25px rgba(250, 112, 154, 0.4) !important;
+}
+
+/* Danger Buttons */
+.btn-danger {
+    background: var(--gradient-danger) !important;
+}
+
+.btn-danger:hover {
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4) !important;
+}
+
+/* Text and Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary) !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.text-primary, .text-accent {
+    color: var(--neon-cyan) !important;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.text-success {
+    color: var(--neon-green) !important;
+    text-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+}
+
+.text-warning {
+    color: var(--neon-yellow) !important;
+    text-shadow: 0 0 10px rgba(255, 255, 0, 0.3);
+}
+
+.text-danger {
+    color: var(--neon-pink) !important;
+    text-shadow: 0 0 10px rgba(255, 0, 128, 0.3);
+}
+
+p, span, .text-muted {
+    color: var(--text-secondary) !important;
+}
+
+/* Tables */
+.table, table {
+    background: var(--dark-card) !important;
+    color: var(--text-primary) !important;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+}
+
+.table th, table th {
+    background: var(--gradient-primary) !important;
+    color: var(--text-primary) !important;
+    border: none !important;
+}
+
+.table td, table td {
+    border-color: rgba(0, 255, 255, 0.1) !important;
+    color: var(--text-secondary) !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background: rgba(0, 255, 255, 0.05) !important;
+}
+
+/* Alerts and Messages */
+.alert {
+    border-radius: 10px !important;
+    border: none !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.alert-success {
+    background: var(--gradient-success) !important;
+    color: var(--text-primary) !important;
+}
+
+.alert-warning {
+    background: var(--gradient-warning) !important;
+    color: var(--text-primary) !important;
+}
+
+.alert-danger {
+    background: var(--gradient-danger) !important;
+    color: var(--text-primary) !important;
+}
+
+.alert-info {
+    background: var(--gradient-tertiary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Footer */
+footer {
+    background: var(--dark-secondary) !important;
+    border-top: 2px solid var(--neon-cyan);
+    color: var(--text-primary) !important;
+}
+
+/* Loading Animations */
+.loading-spinner {
+    border: 4px solid rgba(0, 255, 255, 0.3);
+    border-top: 4px solid var(--neon-cyan);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Glowing Effects */
+.glow-text {
+    animation: glow-pulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow-pulse {
+    from {
+        text-shadow: 0 0 10px var(--neon-cyan);
+    }
+    to {
+        text-shadow: 0 0 20px var(--neon-cyan), 0 0 30px var(--neon-cyan);
+    }
+}
+
+/* Hover Effects for Links */
+a {
+    color: var(--neon-cyan) !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--hot-pink) !important;
+    text-shadow: 0 0 10px var(--hot-pink);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gradient-primary);
+    border-radius: 6px;
+    box-shadow: inset 0 0 5px rgba(0, 255, 255, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gradient-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+    
+    .card, .container-fluid > div {
+        margin: 10px 5px;
+        padding: 15px;
+    }
+    
+    .btn, button {
+        padding: 10px 20px !important;
+        font-size: 14px !important;
+    }
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.8s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-in-left {
+    animation: slideInLeft 0.6s ease-out;
+}
+
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-50px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.slide-in-right {
+    animation: slideInRight 0.6s ease-out;
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(50px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Pulse Animation for Important Elements */
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}

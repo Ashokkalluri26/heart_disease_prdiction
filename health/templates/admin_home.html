@@ -1,0 +1,307 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+.admin-dashboard {
+    margin-top: 120px;
+    padding: 40px 20px;
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.05) 0%, rgba(255, 0, 128, 0.05) 100%);
+}
+
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.welcome-admin {
+    color: var(--neon-cyan);
+    font-size: 3rem;
+    font-weight: bold;
+    text-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+    animation: pulse-glow 3s ease-in-out infinite;
+    margin-bottom: 15px;
+}
+
+.dashboard-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.3rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+@keyframes pulse-glow {
+    0%, 100% { text-shadow: 0 0 30px rgba(0, 255, 255, 0.6); }
+    50% { text-shadow: 0 0 50px rgba(0, 255, 255, 0.8), 0 0 70px rgba(0, 255, 255, 0.4); }
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: var(--dark-card);
+    border-radius: 20px;
+    padding: 30px;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: all 0.4s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.stat-card:hover::before {
+    transform: translateX(100%);
+}
+
+.stat-card:hover {
+    transform: translateY(-15px) scale(1.03);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+    text-decoration: none;
+    color: inherit;
+}
+
+.doctors-card {
+    border-image: linear-gradient(45deg, var(--neon-cyan), var(--electric-blue)) 1;
+    border-style: solid;
+}
+
+.doctors-card:hover {
+    box-shadow: 0 25px 60px rgba(0, 255, 255, 0.3);
+}
+
+.patients-card {
+    border-image: linear-gradient(45deg, var(--neon-green), var(--neon-cyan)) 1;
+    border-style: solid;
+}
+
+.patients-card:hover {
+    box-shadow: 0 25px 60px rgba(0, 255, 65, 0.3);
+}
+
+.feedback-card {
+    border-image: linear-gradient(45deg, var(--neon-pink), var(--hot-pink)) 1;
+    border-style: solid;
+}
+
+.feedback-card:hover {
+    box-shadow: 0 25px 60px rgba(255, 0, 128, 0.3);
+}
+
+.searches-card {
+    border-image: linear-gradient(45deg, var(--neon-orange), var(--neon-yellow)) 1;
+    border-style: solid;
+}
+
+.searches-card:hover {
+    box-shadow: 0 25px 60px rgba(255, 102, 0, 0.3);
+}
+
+.stat-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    color: white;
+}
+
+.doctors-icon {
+    background: var(--gradient-tertiary);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+}
+
+.patients-icon {
+    background: var(--gradient-success);
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.4);
+}
+
+.feedback-icon {
+    background: var(--gradient-secondary);
+    box-shadow: 0 0 30px rgba(255, 0, 128, 0.4);
+}
+
+.searches-icon {
+    background: var(--gradient-warning);
+    box-shadow: 0 0 30px rgba(255, 102, 0, 0.4);
+}
+
+.stat-number {
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    background: linear-gradient(45deg, var(--text-primary), var(--text-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-description {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.dashboard-actions {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.action-button {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin: 0 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.action-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .welcome-admin {
+        font-size: 2.2rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .stat-card {
+        padding: 25px 20px;
+    }
+    
+    .stat-number {
+        font-size: 2.8rem;
+    }
+}
+
+/* Animation for cards */
+.stat-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0.1s; }
+.stat-card:nth-child(2) { animation-delay: 0.2s; }
+.stat-card:nth-child(3) { animation-delay: 0.3s; }
+.stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+
+<div class="admin-dashboard">
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h1 class="welcome-admin">Welcome Admin</h1>
+            <p class="dashboard-subtitle">System Overview & Management</p>
+        </div>
+
+        <!-- Statistics Grid -->
+        <div class="stats-grid">
+            <!-- Doctors Card -->
+            <a href="{% url 'view_doctor' %}" class="stat-card doctors-card">
+                <div class="stat-icon doctors-icon">
+                    <i class="fa fa-user-md"></i>
+                </div>
+                <div class="stat-number">{{doc}}</div>
+                <div class="stat-title">Total Doctors</div>
+                <div class="stat-description">Registered medical professionals with full system access</div>
+            </a>
+
+            <!-- Patients Card -->
+            <a href="{% url 'view_patient' %}" class="stat-card patients-card">
+                <div class="stat-icon patients-icon">
+                    <i class="fa fa-users"></i>
+                </div>
+                <div class="stat-number">{{pat}}</div>
+                <div class="stat-title">Total Patients</div>
+                <div class="stat-description">Registered patients using the prediction system</div>
+            </a>
+
+            <!-- Feedback Card -->
+            <a href="{% url 'view_feedback' %}" class="stat-card feedback-card">
+                <div class="stat-icon feedback-icon">
+                    <i class="fa fa-comments"></i>
+                </div>
+                <div class="stat-number">{{feed}}</div>
+                <div class="stat-title">Total Feedback</div>
+                <div class="stat-description">User feedback and system improvement suggestions</div>
+            </a>
+
+            <!-- Searches Card -->
+            <a href="{% url 'view_search_pat' %}" class="stat-card searches-card">
+                <div class="stat-icon searches-icon">
+                    <i class="fa fa-search"></i>
+                </div>
+                <div class="stat-number">{{dis}}</div>
+                <div class="stat-title">Prediction Searches</div>
+                <div class="stat-description">Heart disease predictions performed by users</div>
+            </a>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="dashboard-actions">
+            <a href="{% url 'add_doctor' %}" class="action-button">
+                <i class="fa fa-plus mr-2"></i>Add Doctor
+            </a>
+            <a href="{% url 'view_feedback' %}" class="action-button">
+                <i class="fa fa-eye mr-2"></i>View Feedback
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

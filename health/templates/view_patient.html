@@ -1,0 +1,656 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    :root {
+        --neon-cyan: #00ffff;
+        --neon-pink: #ff1493;
+        --neon-orange: #ff8c00;
+        --neon-green: #39ff14;
+        --dark-bg: #0a0a0a;
+        --card-bg: rgba(20, 20, 20, 0.9);
+    }
+    
+    .patient-container {
+        background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a2e 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+        color: white;
+    }
+    
+    .patient-title {
+        color: var(--neon-orange);
+        text-shadow: 0 0 20px rgba(255, 140, 0, 0.8);
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    
+    .patient-table-wrapper {
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 140, 0, 0.3);
+        overflow-x: auto;
+    }
+    
+    .patient-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: transparent !important;
+        color: white !important;
+        font-size: 0.9rem;
+        visibility: visible !important;
+        display: table !important;
+    }
+    
+    .patient-table thead th {
+        background: linear-gradient(45deg, var(--neon-orange), #ff6b35);
+        color: white;
+        padding: 15px 10px;
+        text-align: center;
+        font-weight: bold;
+        border: none;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        font-size: 0.85rem;
+    }
+    
+    .patient-table tbody tr {
+        border-bottom: 1px solid rgba(255, 140, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .patient-table tbody tr:hover {
+        background: rgba(255, 140, 0, 0.1);
+        transform: scale(1.01);
+        box-shadow: 0 5px 15px rgba(255, 140, 0, 0.3);
+    }
+    
+    .patient-table tbody td {
+        padding: 12px 10px;
+        border: none;
+        vertical-align: middle;
+        color: #e0e0e0 !important;
+        visibility: visible !important;
+        display: table-cell !important;
+    }
+    
+    .patient-table tbody td:first-child {
+        text-align: center;
+        font-weight: bold;
+        color: var(--neon-orange);
+    }
+    
+    .patient-name-cell {
+        color: var(--neon-pink) !important;
+        font-weight: bold;
+        min-width: 150px;
+    }
+    
+    .patient-email-cell {
+        color: var(--neon-cyan) !important;
+        font-family: 'Courier New', monospace;
+        font-size: 0.8rem;
+    }
+    
+    .patient-contact-cell {
+        color: var(--neon-green) !important;
+        font-weight: bold;
+    }
+    
+    .patient-image {
+        width: 70px !important;
+        height: 70px !important;
+        border-radius: 50%;
+        border: 2px solid var(--neon-orange);
+        object-fit: cover;
+    }
+    
+    .address-cell {
+        max-width: 200px;
+        word-wrap: break-word;
+        font-size: 0.8rem;
+        line-height: 1.3;
+    }
+    
+    .action-btn {
+        background: linear-gradient(45deg, #dc3545, #c82333);
+        border: none;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        font-size: 0.8rem;
+    }
+    
+    .action-btn:hover {
+        background: linear-gradient(45deg, #c82333, #a71e2a);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.6);
+    }
+    
+    .no-image {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, var(--neon-orange), #ff6b35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin: 0 auto;
+    }
+    
+    @media (max-width: 1200px) {
+        .patient-table thead th,
+        .patient-table tbody td {
+            padding: 10px 6px;
+            font-size: 0.8rem;
+        }
+        
+        .patient-image,
+        .no-image {
+            width: 60px !important;
+            height: 60px !important;
+        }
+        
+        .address-cell {
+            max-width: 150px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .patient-table-wrapper {
+            padding: 1rem;
+        }
+        
+        .patient-title {
+            font-size: 2rem;
+        }
+        
+        .patient-image,
+        .no-image {
+            width: 50px !important;
+            height: 50px !important;
+        }
+        
+        .patient-name-cell {
+            min-width: 100px;
+        }
+    }
+    
+    /* AI Assistant Styles */
+    .ai-assistant {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        font-family: 'Arial', sans-serif;
+    }
+    
+    .ai-toggle-btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, var(--neon-orange), #ff6b35);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(255, 140, 0, 0.4);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .ai-toggle-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 25px rgba(255, 140, 0, 0.6);
+    }
+    
+    .ai-chat-window {
+        position: absolute;
+        bottom: 80px;
+        right: 0;
+        width: 350px;
+        height: 450px;
+        background: var(--card-bg);
+        border-radius: 15px;
+        border: 2px solid var(--neon-orange);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    
+    .ai-header {
+        background: linear-gradient(45deg, var(--neon-orange), #ff6b35);
+        padding: 15px;
+        color: white;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .ai-messages {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        color: white;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+    
+    .ai-message {
+        background: rgba(255, 140, 0, 0.1);
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        border-left: 3px solid var(--neon-orange);
+    }
+    
+    .ai-input-area {
+        padding: 15px;
+        border-top: 1px solid rgba(255, 140, 0, 0.3);
+        display: flex;
+        gap: 10px;
+    }
+    
+    .ai-input {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid rgba(255, 140, 0, 0.3);
+        border-radius: 20px;
+        background: rgba(0, 0, 0, 0.3);
+        color: white;
+        outline: none;
+        font-size: 0.9rem;
+    }
+    
+    .ai-send-btn {
+        padding: 8px 15px;
+        background: linear-gradient(45deg, var(--neon-orange), #ff6b35);
+        border: none;
+        border-radius: 20px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .ai-send-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4);
+    }
+    
+    @media (max-width: 768px) {
+        .ai-chat-window {
+            width: 300px;
+            height: 400px;
+        }
+        
+        .ai-assistant {
+            bottom: 15px;
+            right: 15px;
+        }
+    }
+    
+    @keyframes shine {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    }
+</style>
+
+<div class="patient-container">
+    <div class="container-fluid" style="width:95%;">
+        <h1 class="patient-title">Patient Details</h1>
+        
+        <div class="patient-table-wrapper">
+            <div class="table-header" style="margin-bottom: 1.5rem; padding: 1rem; background: linear-gradient(45deg, rgba(255, 140, 0, 0.1), rgba(255, 107, 53, 0.1)); border-radius: 10px; border-left: 4px solid var(--neon-orange);">
+                <h3 style="color: var(--neon-orange); margin: 0; font-size: 1.2rem; font-weight: bold; text-shadow: 0 0 10px rgba(255, 140, 0, 0.5);">
+                    <i class="fa fa-users" style="margin-right: 10px;"></i>
+                    Patient Management System
+                </h3>
+                <p style="color: #e0e0e0; margin: 0.5rem 0 1rem 0; font-size: 0.9rem; opacity: 0.8;">
+                    View and manage registered patient profiles and contact information
+                </p>
+                <div class="search-container" style="display: flex; align-items: center; gap: 10px;">
+                    <div style="position: relative; flex: 1; max-width: 400px;">
+                        <i class="fa fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--neon-orange); z-index: 2;"></i>
+                        <input type="text" id="patientSearch" placeholder="Search patients by name, email, or contact..." 
+                               style="width: 100%; padding: 10px 10px 10px 35px; border: 2px solid rgba(255, 140, 0, 0.3); border-radius: 25px; background: rgba(0, 0, 0, 0.3); color: white; font-size: 0.9rem; outline: none; transition: all 0.3s ease;">
+                    </div>
+                    <button id="clearPatientSearch" style="padding: 10px 15px; background: linear-gradient(45deg, #dc3545, #c82333); border: none; border-radius: 20px; color: white; cursor: pointer; transition: all 0.3s ease;">
+                        <i class="fa fa-times"></i> Clear
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="patient-table" id="patientTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Full Name</th>
+                            <th>Image</th>
+                            <th>Email</th>
+                            <th>Contact</th>
+                            <th>Address</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in patient %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td class="patient-name-cell">{{i.user.first_name}} {{i.user.last_name}}</td>
+                            <td style="text-align: center;">
+                                {% if i.image %}
+                                    <img src="{{i.image.url}}" class="patient-image" alt="Patient Image">
+                                {% else %}
+                                    <div class="no-image">
+                                        {{i.user.first_name|first}}{{i.user.last_name|first}}
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td class="patient-email-cell">{{i.user.email}}</td>
+                            <td class="patient-contact-cell">{{i.contact}}</td>
+                            <td class="address-cell">{{i.address}}</td>
+                            <td style="text-align: center;">
+                                <a href="{% url 'delete_patient' i.id %}">
+                                    <button class="action-btn" onclick="return confirm('Are you sure you want to delete this patient?')">
+                                        <i class="fa fa-trash-o"></i> Delete
+                                    </button>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AI Assistant Component (Only visible after login/registration) -->
+{% if user.is_authenticated %}
+<div class="ai-assistant" id="aiAssistant">
+    <button class="ai-toggle-btn" id="aiToggleBtn" title="AI Assistant">
+        <i class="fa fa-android"></i>
+    </button>
+    
+    <div class="ai-chat-window" id="aiChatWindow">
+        <div class="ai-header">
+            <i class="fa fa-robot"></i>
+            <span>AI Assistant</span>
+            <button style="margin-left: auto; background: none; border: none; color: white; cursor: pointer;" onclick="toggleAIAssistant()">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="ai-messages" id="aiMessages">
+            <div class="ai-message">
+                <div style="display: flex; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgba(255, 140, 0, 0.3);">
+                    <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #ff8c00, #ff6b35, #ff4500); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2); position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent); animation: shine 3s infinite;"></div>
+                        <i class="fa fa-android" style="color: white; font-size: 1.4rem; text-shadow: 0 1px 2px rgba(0,0,0,0.3); z-index: 1;"></i>
+                    </div>
+                    <div>
+                        <strong style="color: var(--neon-orange); font-size: 1.1rem; text-shadow: 0 0 8px rgba(255, 140, 0, 0.3);">AI Patient Care Assistant</strong><br>
+                        <small style="color: #ccc; font-size: 0.85rem;">Ready to help with patient management</small>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                        <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #28a745, #20c997); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 12px; box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2); border: 1px solid rgba(40, 167, 69, 0.3);">
+                            <i class="fa fa-users" style="color: white; font-size: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.2);"></i>
+                        </div>
+                        <strong style="color: #28a745; text-shadow: 0 0 5px rgba(40, 167, 69, 0.3);">Patient Management</strong>
+                    </div>
+                    <div style="margin-left: 40px; font-size: 0.9rem; line-height: 1.5;">
+                        • Add, edit, and manage patient profiles<br>
+                        • View medical history and contact information<br>
+                        • Track health status and appointments
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                        <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #dc3545, #c82333); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 12px; box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2); border: 1px solid rgba(220, 53, 69, 0.3);">
+                            <i class="fa fa-heart" style="color: white; font-size: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.2);"></i>
+                        </div>
+                        <strong style="color: #dc3545; text-shadow: 0 0 5px rgba(220, 53, 69, 0.3);">Heart Disease Prediction</strong>
+                    </div>
+                    <div style="margin-left: 40px; font-size: 0.9rem; line-height: 1.5;">
+                        Sample medical data format:<br>
+                        <code style="background: rgba(0,0,0,0.4); padding: 6px 10px; border-radius: 4px; display: inline-block; margin: 5px 0; font-size: 0.8rem; border-left: 3px solid var(--neon-orange);">
+                        ['20', '0', '22', '22', '12', '22', '22', '120', '22', '22', '22', '2', '11']
+                        </code><br>
+                        <small style="color: #aaa;">Age, Gender, Chest Pain, BP, Cholesterol, etc.</small>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                        <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #17a2b8, #138496); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 12px; box-shadow: 0 3px 10px rgba(23, 162, 184, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2); border: 1px solid rgba(23, 162, 184, 0.3);">
+                            <i class="fa fa-search" style="color: white; font-size: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.2);"></i>
+                        </div>
+                        <strong style="color: #17a2b8; text-shadow: 0 0 5px rgba(23, 162, 184, 0.3);">Search & Filter</strong>
+                    </div>
+                    <div style="margin-left: 40px; font-size: 0.9rem; line-height: 1.5;">
+                        • Search by patient name or email<br>
+                        • Filter by contact details<br>
+                        • Quick access to patient records
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255, 140, 0, 0.3);">
+                    <small style="color: #aaa; font-size: 0.85rem;">
+                        <i class="fa fa-stethoscope" style="margin-right: 5px;"></i>
+                        How can I help with patient care today?
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ai-input-area">
+            <input type="text" class="ai-input" id="aiInput" placeholder="Ask me anything..." onkeypress="handleAIEnter(event)">
+            <button class="ai-send-btn" onclick="sendAIMessage()">
+                <i class="fa fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const table = document.getElementById('patientTable');
+        if (table) {
+            // Force visibility
+            table.style.visibility = 'visible';
+            table.style.display = 'table';
+            table.style.opacity = '1';
+            
+            // Make all cells visible
+            const cells = table.querySelectorAll('td, th');
+            cells.forEach(cell => {
+                cell.style.visibility = 'visible';
+                cell.style.display = 'table-cell';
+            });
+        }
+        
+        // Search functionality
+        const searchInput = document.getElementById('patientSearch');
+        const clearBtn = document.getElementById('clearPatientSearch');
+        const tableRows = document.querySelectorAll('#patientTable tbody tr');
+        
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                
+                tableRows.forEach(row => {
+                    const name = row.querySelector('.patient-name-cell')?.textContent.toLowerCase() || '';
+                    const email = row.querySelector('.patient-email-cell')?.textContent.toLowerCase() || '';
+                    const contact = row.querySelector('.patient-contact-cell')?.textContent.toLowerCase() || '';
+                    const address = row.querySelector('.address-cell')?.textContent.toLowerCase() || '';
+                    
+                    const matchFound = name.includes(searchTerm) || 
+                                    email.includes(searchTerm) || 
+                                    contact.includes(searchTerm) ||
+                                    address.includes(searchTerm);
+                    
+                    row.style.display = matchFound ? '' : 'none';
+                });
+            });
+            
+            // Search input focus effects
+            searchInput.addEventListener('focus', function() {
+                this.style.borderColor = 'var(--neon-orange)';
+                this.style.boxShadow = '0 0 15px rgba(255, 140, 0, 0.3)';
+            });
+            
+            searchInput.addEventListener('blur', function() {
+                this.style.borderColor = 'rgba(255, 140, 0, 0.3)';
+                this.style.boxShadow = 'none';
+            });
+        }
+        
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                tableRows.forEach(row => {
+                    row.style.display = '';
+                });
+            });
+            
+            clearBtn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 6px 20px rgba(220, 53, 69, 0.4)';
+            });
+            
+            clearBtn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+        }
+        
+        // Initialize AI Assistant
+        const aiToggleBtn = document.getElementById('aiToggleBtn');
+        if (aiToggleBtn) {
+            aiToggleBtn.addEventListener('click', toggleAIAssistant);
+        }
+    });
+    
+    // AI Assistant Functions
+    function toggleAIAssistant() {
+        const chatWindow = document.getElementById('aiChatWindow');
+        const toggleBtn = document.getElementById('aiToggleBtn');
+        
+        if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
+            chatWindow.style.display = 'flex';
+            toggleBtn.innerHTML = '<i class="fa fa-times"></i>';
+        } else {
+            chatWindow.style.display = 'none';
+            toggleBtn.innerHTML = '<i class="fa fa-android"></i>';
+        }
+    }
+    
+    function sendAIMessage() {
+        const input = document.getElementById('aiInput');
+        const messagesContainer = document.getElementById('aiMessages');
+        const userMessage = input.value.trim();
+        
+        if (!userMessage) return;
+        
+        // Add user message
+        const userDiv = document.createElement('div');
+        userDiv.className = 'ai-message';
+        userDiv.style.background = 'rgba(0, 123, 255, 0.1)';
+        userDiv.style.borderLeft = '3px solid #007bff';
+        userDiv.innerHTML = `<strong>You:</strong> ${userMessage}`;
+        messagesContainer.appendChild(userDiv);
+        
+        // Generate AI response
+        const aiResponse = generatePatientAIResponse(userMessage.toLowerCase());
+        
+        setTimeout(() => {
+            const aiDiv = document.createElement('div');
+            aiDiv.className = 'ai-message';
+            aiDiv.innerHTML = `<strong>🤖 AI Assistant:</strong> ${aiResponse}`;
+            messagesContainer.appendChild(aiDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 500);
+        
+        input.value = '';
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+    
+    function handleAIEnter(event) {
+        if (event.key === 'Enter') {
+            sendAIMessage();
+        }
+    }
+    
+    function generatePatientAIResponse(message) {
+        // Patient management responses
+        if (message.includes('patient') || message.includes('manage') || message.includes('profile')) {
+            return `For patient management:<br><br>
+                   <strong>👥 View Patients:</strong> All registered patients are displayed in the table<br>
+                   <strong>🔍 Search Patients:</strong> Use the search bar to find specific patients<br>
+                   <strong>📧 Contact Info:</strong> Email and phone numbers are displayed<br>
+                   <strong>🗑️ Delete Patient:</strong> Use the delete button to remove patient records<br>
+                   <strong>📷 Profile Images:</strong> Patient photos are shown when available<br><br>
+                   All patient data is handled with strict privacy and security measures.`;
+        }
+        
+        // Sample medical data responses
+        if (message.includes('sample') || message.includes('data') || message.includes('medical') || message.includes('values')) {
+            return `Here's a sample medical data format for heart disease prediction:<br><br>
+                   <code style="background: rgba(0,0,0,0.3); padding: 5px; border-radius: 3px; display: block; margin: 5px 0;">
+                   ['20', '0', '22', '22', '12', '22', '22', '120', '22', '22', '22', '2', '11']
+                   </code><br>
+                   These values represent patient health metrics:<br>
+                   • Age, Gender, Chest Pain Type<br>
+                   • Blood Pressure, Cholesterol Levels<br>
+                   • Heart Rate, Exercise Tolerance<br>
+                   • Other cardiac risk factors<br><br>
+                   Ensure accurate data entry for reliable predictions.`;
+        }
+        
+        // Search functionality
+        if (message.includes('search') || message.includes('find')) {
+            return `Patient search features:<br><br>
+                   <strong>🔍 Real-time Search:</strong> Results filter as you type<br>
+                   <strong>📝 Search Fields:</strong> Name, email, contact, address<br>
+                   <strong>🧹 Clear Function:</strong> Reset search with the clear button<br>
+                   <strong>⚡ Instant Results:</strong> No need to press enter<br><br>
+                   Try searching for patient names, email addresses, or phone numbers!`;
+        }
+        
+        // Default response
+        return `I can help you with:<br><br>
+               <strong>👥 Patient Records</strong> - Managing patient information<br>
+               <strong>📊 Medical Data</strong> - Sample values and formats<br>
+               <strong>🔍 Search Features</strong> - Finding patient records<br>
+               <strong>🔒 Privacy & Security</strong> - Data protection measures<br>
+               <strong>💡 Best Practices</strong> - Efficient patient management<br><br>
+               What would you like to know about patient management?`;
+    }
+    
+</script>
+
+{% endblock %}

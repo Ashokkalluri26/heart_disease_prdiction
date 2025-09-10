@@ -1,0 +1,117 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<div class="container">
+    <!-- Example Form Container -->
+    <div class="form-container">
+        <h2 class="text-center mb-4">Heart Disease Prediction</h2>
+        
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label">Age</label>
+                <input type="number" class="form-control" name="age" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Gender</label>
+                <select class="form-control" name="sex" required>
+                    <option value="">Select Gender</option>
+                    <option value="1">Male</option>
+                    <option value="0">Female</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Chest Pain Type</label>
+                <select class="form-control" name="cp" required>
+                    <option value="">Select Chest Pain Type</option>
+                    <option value="0">Typical Angina</option>
+                    <option value="1">Atypical Angina</option>
+                    <option value="2">Non-anginal Pain</option>
+                    <option value="3">Asymptomatic</option>
+                </select>
+            </div>
+            
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-heartbeat"></i> Predict Heart Disease
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Example Prediction Results -->
+    <div class="prediction-result result-healthy">
+        <h3><i class="fa fa-check-circle"></i> Healthy Result</h3>
+        <p class="mb-2">Based on your input data, you appear to be healthy.</p>
+        <p class="mb-3"><strong>Accuracy:</strong> 85.2%</p>
+        <div class="mt-4">
+            <button class="btn btn-success">View Detailed Report</button>
+            <button class="btn btn-primary">Find Nearby Doctors</button>
+        </div>
+    </div>
+
+    <div class="prediction-result result-unhealthy">
+        <h3><i class="fa fa-exclamation-triangle"></i> Heart Disease Suspected</h3>
+        <p class="mb-2">Your results indicate potential heart disease risk factors.</p>
+        <p class="mb-3"><strong>Accuracy:</strong> 87.6%</p>
+        <div class="mt-4">
+            <button class="btn btn-danger">Consult Doctor Immediately</button>
+            <button class="btn btn-primary">Find Cardiologists</button>
+        </div>
+    </div>
+
+    <!-- Example Loading Spinner -->
+    <div class="text-center">
+        <div class="loading-spinner"></div>
+        <p>Processing your prediction...</p>
+    </div>
+
+    <!-- Example Dashboard Cards -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="dashboard-card">
+                <div class="icon">
+                    <i class="fa fa-users"></i>
+                </div>
+                <div class="number">1,234</div>
+                <div class="label">Total Patients</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="dashboard-card">
+                <div class="icon">
+                    <i class="fa fa-user-md"></i>
+                </div>
+                <div class="number">56</div>
+                <div class="label">Doctors</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="dashboard-card">
+                <div class="icon">
+                    <i class="fa fa-heartbeat"></i>
+                </div>
+                <div class="number">892</div>
+                <div class="label">Predictions</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="dashboard-card">
+                <div class="icon">
+                    <i class="fa fa-star"></i>
+                </div>
+                <div class="number">4.8</div>
+                <div class="label">Rating</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

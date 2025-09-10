@@ -1,0 +1,673 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    :root {
+        --neon-cyan: #00ffff;
+        --neon-pink: #ff1493;
+        --neon-orange: #ff8c00;
+        --neon-green: #39ff14;
+        --dark-bg: #0a0a0a;
+        --card-bg: rgba(20, 20, 20, 0.9);
+    }
+    
+    .logs-container {
+        background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a2e 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+        color: white;
+    }
+    
+    .logs-title {
+        color: var(--neon-orange);
+        text-shadow: 0 0 20px rgba(255, 140, 0, 0.8);
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    
+    .logs-table-wrapper {
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 140, 0, 0.3);
+        overflow-x: auto;
+    }
+    
+    .logs-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: transparent !important;
+        color: white !important;
+        font-size: 0.9rem;
+        visibility: visible !important;
+        display: table !important;
+    }
+    
+    .logs-table thead th {
+        background: linear-gradient(45deg, var(--neon-orange), #ff6b35);
+        color: white;
+        padding: 15px 8px;
+        text-align: center;
+        font-weight: bold;
+        border: none;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        font-size: 0.85rem;
+    }
+    
+    .logs-table tbody tr {
+        border-bottom: 1px solid rgba(255, 140, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .logs-table tbody tr:hover {
+        background: rgba(255, 140, 0, 0.1);
+        transform: scale(1.01);
+        box-shadow: 0 5px 15px rgba(255, 140, 0, 0.3);
+    }
+    
+    .logs-table tbody td {
+        padding: 12px 8px;
+        border: none;
+        vertical-align: top;
+        color: #e0e0e0 !important;
+        visibility: visible !important;
+        display: table-cell !important;
+    }
+    
+    .logs-table tbody td:first-child {
+        text-align: center;
+        font-weight: bold;
+        color: var(--neon-orange);
+    }
+    
+    .patient-name-cell {
+        color: var(--neon-pink);
+        font-weight: bold;
+        min-width: 120px;
+    }
+    
+    .accuracy-cell {
+        color: var(--neon-cyan);
+        font-family: 'Courier New', monospace;
+        text-align: center;
+    }
+    
+    .result-healthy {
+        color: var(--neon-green) !important;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+        margin: 0;
+        font-size: 0.9rem;
+    }
+    
+    .result-unhealthy {
+        color: #ff4757 !important;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
+        margin: 0;
+        font-size: 0.9rem;
+    }
+    
+    .heart-values-cell {
+        max-width: 250px;
+        min-width: 200px;
+        word-wrap: break-word;
+        word-break: break-word;
+        font-family: 'Courier New', monospace;
+        font-size: 0.8rem;
+        line-height: 1.4;
+        color: #ffffff !important;
+        background: rgba(255, 140, 0, 0.1) !important;
+        padding: 10px !important;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 140, 0, 0.3);
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+    }
+    
+    .action-btn {
+        background: linear-gradient(45deg, #dc3545, #c82333);
+        border: none;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        font-size: 0.8rem;
+    }
+    
+    .action-btn:hover {
+        background: linear-gradient(45deg, #c82333, #a71e2a);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.6);
+    }
+    
+    .date-cell {
+        color: var(--neon-cyan);
+        font-size: 0.8rem;
+        min-width: 100px;
+    }
+    
+    @media (max-width: 1200px) {
+        .heart-values-cell {
+            max-width: 150px;
+            font-size: 0.7rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .logs-table-wrapper {
+            padding: 1rem;
+        }
+        
+        .logs-table thead th,
+        .logs-table tbody td {
+            padding: 8px 4px;
+            font-size: 0.75rem;
+        }
+        
+        .heart-values-cell {
+            max-width: 120px;
+            font-size: 0.65rem;
+        }
+        
+        .logs-title {
+            font-size: 2rem;
+        }
+        
+        .patient-name-cell {
+            min-width: 80px;
+        }
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* AI Assistant Styles */
+    .ai-assistant {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        font-family: 'Arial', sans-serif;
+    }
+    
+    .ai-toggle-btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, var(--neon-orange), #ff6b35);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(255, 140, 0, 0.4);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .ai-toggle-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 25px rgba(255, 140, 0, 0.6);
+    }
+    
+    .ai-chat-window {
+        position: absolute;
+        bottom: 80px;
+        right: 0;
+        width: 350px;
+        height: 450px;
+        background: var(--card-bg);
+        border-radius: 15px;
+        border: 2px solid var(--neon-orange);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    
+    .ai-header {
+        background: linear-gradient(45deg, var(--neon-orange), #ff6b35);
+        padding: 15px;
+        color: white;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .ai-messages {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        color: white;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+    
+    .ai-message {
+        background: rgba(255, 140, 0, 0.1);
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        border-left: 3px solid var(--neon-orange);
+    }
+    
+    .ai-input-area {
+        padding: 15px;
+        border-top: 1px solid rgba(255, 140, 0, 0.3);
+        display: flex;
+        gap: 10px;
+    }
+    
+    .ai-input {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid rgba(255, 140, 0, 0.3);
+        border-radius: 20px;
+        background: rgba(0, 0, 0, 0.3);
+        color: white;
+        outline: none;
+        font-size: 0.9rem;
+    }
+    
+    .ai-send-btn {
+        padding: 8px 15px;
+        background: linear-gradient(45deg, var(--neon-orange), #ff6b35);
+        border: none;
+        border-radius: 20px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .ai-send-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4);
+    }
+    
+    @media (max-width: 768px) {
+        .ai-chat-window {
+            width: 300px;
+            height: 400px;
+        }
+        
+        .ai-assistant {
+            bottom: 15px;
+            right: 15px;
+        }
+    }
+    
+    @keyframes shine {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    }
+</style>
+
+<div class="logs-container">
+    <div class="container-fluid" style="width:98%;">
+        <h1 class="logs-title">Search Details</h1>
+        
+        <div class="logs-table-wrapper">
+            <div class="table-header" style="margin-bottom: 1.5rem; padding: 1rem; background: linear-gradient(45deg, rgba(255, 140, 0, 0.1), rgba(255, 107, 53, 0.1)); border-radius: 10px; border-left: 4px solid var(--neon-orange);">
+                <h3 style="color: var(--neon-orange); margin: 0; font-size: 1.2rem; font-weight: bold; text-shadow: 0 0 10px rgba(255, 140, 0, 0.5);">
+                    <i class="fa fa-search" style="margin-right: 10px;"></i>
+                    Heart Disease Prediction Logs
+                </h3>
+                <p style="color: #e0e0e0; margin: 0.5rem 0 1rem 0; font-size: 0.9rem; opacity: 0.8;">
+                    View patient search history and heart disease prediction results
+                </p>
+                <div class="search-container" style="display: flex; align-items: center; gap: 10px;">
+                    <div style="position: relative; flex: 1; max-width: 400px;">
+                        <i class="fa fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--neon-orange); z-index: 2;"></i>
+                        <input type="text" id="logsSearch" placeholder="Search by patient name, symptoms, or disease..." 
+                               style="width: 100%; padding: 10px 10px 10px 35px; border: 2px solid rgba(255, 140, 0, 0.3); border-radius: 25px; background: rgba(0, 0, 0, 0.3); color: white; font-size: 0.9rem; outline: none; transition: all 0.3s ease;">
+                    </div>
+                    <button id="clearLogsSearch" style="padding: 10px 15px; background: linear-gradient(45deg, #dc3545, #c82333); border: none; border-radius: 20px; color: white; cursor: pointer; transition: all 0.3s ease;">
+                        <i class="fa fa-times"></i> Clear
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="logs-table" id="logsTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            {% if request.user.patient_set.all.0 %}
+                            <th>Date</th>
+                            {% else %}
+                            <th>Patient Name</th>
+                            {% endif %}
+                            <th>Accuracy</th>
+                            <th>Result</th>
+                            <th>Heart Values</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in data %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            {% if request.user.patient_set.all.0 %}
+                                <td class="date-cell">{{i.created|date:"M d, Y"}}</td>
+                            {% else %}
+                                <td class="patient-name-cell">{{i.patient.user.first_name}} {{i.patient.user.last_name}}</td>
+                            {% endif %}
+                            <td class="accuracy-cell">{{i.prediction_accuracy|floatformat:2}}%</td>
+                            <td style="text-align: center;">
+                                {% if i.result == "0" %}
+                                    <h5 class="result-healthy">Healthy</h5>
+                                {% else %}
+                                    <h5 class="result-unhealthy">Unhealthy</h5>
+                                {% endif %}
+                            </td>
+                            <td class="heart-values-cell">{{i.values_list}}</td>
+                            <td style="text-align: center;">
+                                <a href="/delete_searched/{{i.id}}">
+                                    <button class="action-btn" onclick="return confirm('Are you sure you want to delete this log?')">
+                                        <i class="fa fa-trash-o"></i> Delete
+                                    </button>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AI Assistant Component (Only visible after login/registration) -->
+{% if user.is_authenticated %}
+<div class="ai-assistant" id="aiAssistant">
+    <button class="ai-toggle-btn" id="aiToggleBtn" title="AI Assistant">
+        <i class="fa fa-android"></i>
+    </button>
+    
+    <div class="ai-chat-window" id="aiChatWindow">
+        <div class="ai-header">
+            <i class="fa fa-robot"></i>
+            <span>AI Assistant</span>
+            <button style="margin-left: auto; background: none; border: none; color: white; cursor: pointer;" onclick="toggleAIAssistant()">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="ai-messages" id="aiMessages">
+            <div class="ai-message">
+                <div style="display: flex; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgba(255, 140, 0, 0.3);">
+                    <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #ff8c00, #ff6b35, #ff4500); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2); position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent); animation: shine 3s infinite;"></div>
+                        <i class="fa fa-android" style="color: white; font-size: 1.4rem; text-shadow: 0 1px 2px rgba(0,0,0,0.3); z-index: 1;"></i>
+                    </div>
+                    <div>
+                        <strong style="color: var(--neon-orange); font-size: 1.1rem; text-shadow: 0 0 8px rgba(255, 140, 0, 0.3);">AI Search Analytics Assistant</strong><br>
+                        <small style="color: #ccc; font-size: 0.85rem;">Ready to help with prediction logs</small>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                        <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #17a2b8, #138496); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 12px; box-shadow: 0 3px 10px rgba(23, 162, 184, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2); border: 1px solid rgba(23, 162, 184, 0.3);">
+                            <i class="fa fa-history" style="color: white; font-size: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.2);"></i>
+                        </div>
+                        <strong style="color: #17a2b8; text-shadow: 0 0 5px rgba(23, 162, 184, 0.3);">Search History</strong>
+                    </div>
+                    <div style="margin-left: 40px; font-size: 0.9rem; line-height: 1.5;">
+                        • View patient search history and results<br>
+                        • Track prediction patterns over time<br>
+                        • Analyze system usage statistics
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                        <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #dc3545, #c82333); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 12px; box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2); border: 1px solid rgba(220, 53, 69, 0.3);">
+                            <i class="fa fa-heartbeat" style="color: white; font-size: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.2);"></i>
+                        </div>
+                        <strong style="color: #dc3545; text-shadow: 0 0 5px rgba(220, 53, 69, 0.3);">Heart Disease Analytics</strong>
+                    </div>
+                    <div style="margin-left: 40px; font-size: 0.9rem; line-height: 1.5;">
+                        • Review 13 cardiac parameters<br>
+                        • Monitor prediction accuracy<br>
+                        • Identify high-risk patterns
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                        <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #007bff, #0056b3); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 12px; box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2); border: 1px solid rgba(0, 123, 255, 0.3);">
+                            <i class="fa fa-code" style="color: white; font-size: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.2);"></i>
+                        </div>
+                        <strong style="color: #007bff; text-shadow: 0 0 5px rgba(0, 123, 255, 0.3);">Sample Data Format</strong>
+                    </div>
+                    <div style="margin-left: 40px; font-size: 0.9rem; line-height: 1.5;">
+                        Standard prediction input:<br>
+                        <code style="background: rgba(0,0,0,0.4); padding: 6px 10px; border-radius: 4px; display: inline-block; margin: 5px 0; font-size: 0.8rem; border-left: 3px solid var(--neon-orange);">
+                        ['20', '0', '22', '22', '12', '22', '22', '120', '22', '22', '22', '2', '11']
+                        </code><br>
+                        <small style="color: #aaa;">Age, Gender, CP, BP, Chol, FBS, RestECG, MaxHR, ExAng, Oldpeak, Slope, CA, Thal</small>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255, 140, 0, 0.3);">
+                    <small style="color: #aaa; font-size: 0.85rem;">
+                        <i class="fa fa-bar-chart" style="margin-right: 5px;"></i>
+                        What analytics would you like to explore?
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ai-input-area">
+            <input type="text" class="ai-input" id="aiInput" placeholder="Ask me anything..." onkeypress="handleAIEnter(event)">
+            <button class="ai-send-btn" onclick="sendAIMessage()">
+                <i class="fa fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const table = document.getElementById('logsTable');
+        if (table) {
+            // Force visibility
+            table.style.visibility = 'visible';
+            table.style.display = 'table';
+            table.style.opacity = '1';
+            
+            // Make all cells visible
+            const cells = table.querySelectorAll('td, th');
+            cells.forEach(cell => {
+                cell.style.visibility = 'visible';
+                cell.style.display = 'table-cell';
+                cell.style.color = cell.classList.contains('heart-values-cell') ? '#ffffff' : '';
+            });
+            
+            // Ensure heart values are readable
+            const heartCells = table.querySelectorAll('.heart-values-cell');
+            heartCells.forEach(cell => {
+                cell.style.backgroundColor = 'rgba(255, 140, 0, 0.15)';
+                cell.style.color = '#ffffff';
+                cell.style.border = '1px solid rgba(255, 140, 0, 0.4)';
+            });
+        }
+        
+        // Search functionality
+        const searchInput = document.getElementById('logsSearch');
+        const clearBtn = document.getElementById('clearLogsSearch');
+        const tableRows = document.querySelectorAll('#logsTable tbody tr');
+        
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                
+                tableRows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    let matchFound = false;
+                    
+                    cells.forEach(cell => {
+                        if (cell.textContent.toLowerCase().includes(searchTerm)) {
+                            matchFound = true;
+                        }
+                    });
+                    
+                    row.style.display = matchFound ? '' : 'none';
+                });
+            });
+            
+            // Search input focus effects
+            searchInput.addEventListener('focus', function() {
+                this.style.borderColor = 'var(--neon-orange)';
+                this.style.boxShadow = '0 0 15px rgba(255, 140, 0, 0.3)';
+            });
+            
+            searchInput.addEventListener('blur', function() {
+                this.style.borderColor = 'rgba(255, 140, 0, 0.3)';
+                this.style.boxShadow = 'none';
+            });
+        }
+        
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                tableRows.forEach(row => {
+                    row.style.display = '';
+                });
+            });
+            
+            clearBtn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 6px 20px rgba(220, 53, 69, 0.4)';
+            });
+            
+            clearBtn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+        }
+        
+        // AI Assistant Functions
+        function toggleAIAssistant() {
+            const chatWindow = document.getElementById('aiChatWindow');
+            const toggleBtn = document.getElementById('aiToggleBtn');
+            
+            if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
+                chatWindow.style.display = 'flex';
+                toggleBtn.innerHTML = '<i class="fa fa-times"></i>';
+            } else {
+                chatWindow.style.display = 'none';
+                toggleBtn.innerHTML = '<i class="fa fa-android"></i>';
+            }
+        }
+        
+        function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            const messagesContainer = document.getElementById('aiMessages');
+            const userMessage = input.value.trim();
+            
+            if (!userMessage) return;
+            
+            // Add user message
+            const userDiv = document.createElement('div');
+            userDiv.className = 'ai-message';
+            userDiv.style.background = 'rgba(0, 123, 255, 0.1)';
+            userDiv.style.borderLeft = '3px solid #007bff';
+            userDiv.innerHTML = `<strong>You:</strong> ${userMessage}`;
+            messagesContainer.appendChild(userDiv);
+            
+            // Generate AI response
+            const aiResponse = generateSearchLogsAIResponse(userMessage.toLowerCase());
+            
+            setTimeout(() => {
+                const aiDiv = document.createElement('div');
+                aiDiv.className = 'ai-message';
+                aiDiv.innerHTML = `<strong>🤖 AI Assistant:</strong> ${aiResponse}`;
+                messagesContainer.appendChild(aiDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 500);
+            
+            input.value = '';
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function handleAIEnter(event) {
+            if (event.key === 'Enter') {
+                sendAIMessage();
+            }
+        }
+        
+        function generateSearchLogsAIResponse(message) {
+            // Search logs management responses
+            if (message.includes('logs') || message.includes('search') || message.includes('history')) {
+                return `For search logs management:<br><br>
+                       <strong>📊 View Logs:</strong> All patient search history is displayed<br>
+                       <strong>🔍 Search Logs:</strong> Use the search bar to filter by patient name, symptoms, or disease<br>
+                       <strong>💓 Heart Values:</strong> Review the 13 heart parameters used for prediction<br>
+                       <strong>🎯 Predictions:</strong> See heart disease prediction results<br>
+                       <strong>📈 Patterns:</strong> Analyze prediction accuracy and trends<br><br>
+                       These logs help track system usage and prediction effectiveness.`;
+            }
+            
+            // Sample medical data responses
+            if (message.includes('sample') || message.includes('data') || message.includes('medical') || message.includes('values') || message.includes('heart')) {
+                return `Here's the sample medical data format for heart disease prediction:<br><br>
+                       <code style="background: rgba(0,0,0,0.3); padding: 5px; border-radius: 3px; display: block; margin: 5px 0;">
+                       ['20', '0', '22', '22', '12', '22', '22', '120', '22', '22', '22', '2', '11']
+                       </code><br>
+                       These 13 values represent:<br>
+                       • Age, Gender, Chest Pain Type<br>
+                       • Resting Blood Pressure, Cholesterol<br>
+                       • Fasting Blood Sugar, ECG Results<br>
+                       • Max Heart Rate, Exercise Angina<br>
+                       • ST Depression, Slope, Vessels, Thal<br><br>
+                       Each parameter is crucial for accurate heart disease prediction.`;
+            }
+            
+            // Prediction analysis
+            if (message.includes('prediction') || message.includes('disease') || message.includes('result')) {
+                return `Understanding prediction results:<br><br>
+                       <strong>🎯 Prediction Values:</strong> 0 = No heart disease, 1 = Heart disease detected<br>
+                       <strong>📊 Accuracy:</strong> Model uses machine learning algorithms<br>
+                       <strong>⚠️ Important:</strong> Predictions are for reference only<br>
+                       <strong>🏥 Medical Advice:</strong> Always consult healthcare professionals<br>
+                       <strong>📈 Tracking:</strong> Monitor prediction patterns over time<br><br>
+                       Use these logs to improve system accuracy and patient care.`;
+            }
+            
+            // Default response
+            return `I can help you with:<br><br>
+                   <strong>📊 Search Logs</strong> - View and analyze patient search history<br>
+                   <strong>💓 Heart Data</strong> - Sample medical values and formats<br>
+                   <strong>🔍 Log Search</strong> - Finding specific patient records<br>
+                   <strong>🎯 Predictions</strong> - Understanding heart disease results<br>
+                   <strong>📈 Analysis</strong> - Tracking system usage patterns<br><br>
+                   What would you like to know about the search logs?`;
+        }
+        
+        // Initialize AI Assistant
+        const aiToggleBtn = document.getElementById('aiToggleBtn');
+        if (aiToggleBtn) {
+            aiToggleBtn.addEventListener('click', toggleAIAssistant);
+        }
+    });
+</script>
+
+{% endblock %}
