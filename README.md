@@ -145,10 +145,6 @@ def prdict_heart_disease(list_data):
     dataframe = str(df.head())
     return (nn_model.score(X_test, y_test) * 100),(pred)
 ```
-
-### For a detailed Report <a href="https://github.com/Kumar-laxmi/Heart-Disease-Prediction-System/blob/main/REPORT/PYTHON%20CAPSTONE%20PROJECT%20REPORT%20(TEAM%202).pdf">Click Here</a>
-
-
 ## Output Screen-shots
 When the application is runned then, a Welcome Page pops-up
 <img src="https://github.com/Ashokkalluri26/heart_disease_prdiction/blob/main/media/screenshots/WelcomePage.png" />
@@ -166,7 +162,7 @@ To view our own details:
 <img src="https://github.com/Ashokkalluri26/heart_disease_prdiction/blob/main/media/screenshots/patientprofile.png" />
 
 To view registered Doctor information:
-<img src="" />
+<img src="https://github.com/Ashokkalluri26/heart_disease_prdiction/blob/main/media/screenshots/doctors.png" />
 
 ## NOTE: GitHub Pages is not working
 
