@@ -163,13 +163,10 @@ Since these details are stored in the Data-base, so we can also retrieve past re
 <img src="https://github.com/Ashokkalluri26/heart_disease_prdiction/blob/main/media/screenshots/searchedlogs.png" />
 
 To view our own details:
-<img src="" />
-
-If a user doesn't understand how to use the application then he can:
-<img src="https://github.com/Kumar-laxmi/Heart-Disease-Prediction-System/blob/main/SCREEN-SHOTS/IntroductionViewVideo.png" />
+<img src="https://github.com/Ashokkalluri26/heart_disease_prdiction/blob/main/media/screenshots/patientprofile.png" />
 
 To view registered Doctor information:
-<img src="https://github.com/Kumar-laxmi/Heart-Disease-Prediction-System/blob/main/SCREEN-SHOTS/DoctorRecords.png" />
+<img src="" />
 
 ## NOTE: GitHub Pages is not working
 
