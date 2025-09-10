@@ -154,10 +154,10 @@ When the application is runned then, a Welcome Page pops-up
 <img src="https://github.com/Ashokkalluri26/heart_disease_prdiction/blob/main/media/screenshots/WelcomePage.png" />
 
 Admin Dash-board:
-<img src="https://github.com/Kumar-laxmi/Heart-Disease-Prediction-System/blob/main/SCREEN-SHOTS/AdminDashboard.png" />
+<img src="https://github.com/Ashokkalluri26/heart_disease_prdiction/blob/main/media/screenshots/admindashboard.png" />
 
 Entering Heart Details to check our Health:
-<img src="https://github.com/Kumar-laxmi/Heart-Disease-Prediction-System/blob/main/SCREEN-SHOTS/AddHeartDetail.png" />
+<img src="" />
 
 Since these details are stored in the Data-base, so we can also retrieve past results:
 <img src="https://github.com/Kumar-laxmi/Heart-Disease-Prediction-System/blob/main/SCREEN-SHOTS/SearchLogs1.png" />
