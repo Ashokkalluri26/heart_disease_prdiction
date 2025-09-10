@@ -160,10 +160,10 @@ Entering Heart Details to check our Health:
 <img src="https://github.com/Ashokkalluri26/heart_disease_prdiction/blob/main/media/screenshots/patientpredict.png" />
 
 Since these details are stored in the Data-base, so we can also retrieve past results:
-<img src="" />
+<img src="https://github.com/Ashokkalluri26/heart_disease_prdiction/blob/main/media/screenshots/searchedlogs.png" />
 
 To view our own details:
-<img src="https://github.com/Kumar-laxmi/Heart-Disease-Prediction-System/blob/main/SCREEN-SHOTS/ViewMyDetaile.png" />
+<img src="" />
 
 If a user doesn't understand how to use the application then he can:
 <img src="https://github.com/Kumar-laxmi/Heart-Disease-Prediction-System/blob/main/SCREEN-SHOTS/IntroductionViewVideo.png" />
