@@ -151,7 +151,7 @@ def prdict_heart_disease(list_data):
 
 ## Output Screen-shots
 When the application is runned then, a Welcome Page pops-up
-<img src="https://github.com/Kumar-laxmi/Heart-Disease-Prediction-System/blob/main/SCREEN-SHOTS/WelcomePage.png" />
+<img src="https://github.com/Ashokkalluri26/heart_disease_prdiction/blob/main/media/screenshots/WelcomePage.png" />
 
 Admin Dash-board:
 <img src="https://github.com/Kumar-laxmi/Heart-Disease-Prediction-System/blob/main/SCREEN-SHOTS/AdminDashboard.png" />
