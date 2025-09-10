@@ -157,10 +157,10 @@ Admin Dash-board:
 <img src="https://github.com/Ashokkalluri26/heart_disease_prdiction/blob/main/media/screenshots/admindashboard.png" />
 
 Entering Heart Details to check our Health:
-<img src="" />
+<img src="https://github.com/Ashokkalluri26/heart_disease_prdiction/blob/main/media/screenshots/patientpredict.png" />
 
 Since these details are stored in the Data-base, so we can also retrieve past results:
-<img src="https://github.com/Kumar-laxmi/Heart-Disease-Prediction-System/blob/main/SCREEN-SHOTS/SearchLogs1.png" />
+<img src="" />
 
 To view our own details:
 <img src="https://github.com/Kumar-laxmi/Heart-Disease-Prediction-System/blob/main/SCREEN-SHOTS/ViewMyDetaile.png" />
